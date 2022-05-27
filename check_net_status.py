@@ -9,8 +9,6 @@ from openstack.connection import Connection
 from openstack.compute.v2.server import Server
 import openstack
 
-
-
 class CheckProjectInstancesNetStatus(object):
     
         def __init__(self, conn: Connection) -> None:
