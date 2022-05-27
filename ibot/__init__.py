@@ -1,9 +1,9 @@
 from mattermostdriver import Driver
 
 ibot = Driver({
-    'url': 'team.veone.net',
-    'login_id': 'wkouassi',
-    'password': 'AMD Quad-CoreA8',
+    'url': '',
+    'login_id': '',
+    'password': '',
     # 'scheme': 'https',
     'port': 80,
     # 'verify': False
