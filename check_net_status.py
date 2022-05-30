@@ -1,4 +1,3 @@
-from concurrent.futures import process
 import subprocess
 import ipaddress
 from time import sleep
@@ -7,7 +6,6 @@ from typing import List, Union
 
 from openstack.connection import Connection
 from openstack.compute.v2.server import Server
-import openstack
 
 class CheckProjectInstancesNetStatus(object):
     
@@ -100,7 +98,7 @@ class CheckProjectInstancesNetStatus(object):
                 
         def netcat_ports(self, ports: Union[int, List[int]], instanceIp4: str) -> bool:
             
-            assert isinstance(ports,(int,list)),"Port mast be of type Int or a list of int"
+            assert isinstance(ports,(int,list)),"Port must be of type int or a list of int"
             ports_to_check = []
             if isinstance(ports, int):
                 ports_to_check.append(ports)
