@@ -1,7 +1,7 @@
+from concurrent.futures import process
 import subprocess
 import ipaddress
 from time import sleep
-import traceback
 
 from typing import List, Union
 
@@ -14,6 +14,40 @@ class CheckProjectInstancesNetStatus(object):
         def __init__(self, conn: Connection) -> None:
             
             self.conn = conn
+            
+        @classmethod
+        def ping(cls,ip: str, retry: int = 3) -> subprocess.CompletedProcess:
+                """
+
+                Args:
+                    ip (str): _description_
+
+                Returns:
+                    subprocess.CompletedProcess: _description_
+                """
+                shell_str = "ping -c 4 {}".format(ip)
+                process = subprocess.run(shell_str,shell=True,stdout=subprocess.PIPE, universal_newlines=True)
+                if process.returncode != 0:
+                    if retry == 0:
+                        return(process)
+                    sleep(5)                  
+                    cls.ping(ip,retry-1)
+                return(process)
+            
+        @classmethod
+        def netcat(cls, ip: str, retry: int = 3) -> subprocess.CompletedProcess:
+            """_summary_
+
+            Args:
+                ip (str): _description_
+                retry (int, optional): _description_. Defaults to 3.
+
+            Returns:
+                subprocess.CompletedProcess: _description_
+            """
+            shell_str = ""
+            process = subprocess.run(shell_str,shell=True, stdout=subprocess.PIPE, universal_newlines=True)
+            return process
             
         def list_servers(self) -> List[Server]:
             """_summary_
@@ -49,31 +83,7 @@ class CheckProjectInstancesNetStatus(object):
 
             Raises:
                 Exception: _description_
-            """
-            global TEMP
-            TEMP = 3
-            
-            def ping(ip: str) -> subprocess.CompletedProcess:
-                """
-
-                Args:
-                    ip (str): _description_
-
-                Returns:
-                    subprocess.CompletedProcess: _description_
-                """
-                global TEMP 
-                shell_str = "ping -c 4 {}".format(ip)
-                process = subprocess.run(shell_str,shell=True,stdout=subprocess.PIPE, universal_newlines=True)
-                if process.returncode != 0:
-                    sleep(5)
-                    TEMP -=1
-                    if TEMP == 0:
-                        return(process)
-                    ping(ip)
-                TEMP=3
-                return(process)
-                
+            """     
             ips_to_ping = []
             EXCEPTION = [" ", None]
             
@@ -85,19 +95,16 @@ class CheckProjectInstancesNetStatus(object):
             if( instanceIP in EXCEPTION and interface in EXCEPTION):
                 raise Exception("You must give an IP or Interface to ping.")
             for ip in ips_to_ping:    
-                process = ping(ip)
+                process = self.ping(ip)
                 print(process.stdout)
                 
         def netcat_ports(self, ports: Union[int, List[int]], instanceIp4: str) -> bool:
             
-            def netcat(port: int):
-                pass
-            
-            assert isinstance(ports,(int,list)),"Port mast be of type Int or a list of int "
-            
+            assert isinstance(ports,(int,list)),"Port mast be of type Int or a list of int"
+            ports_to_check = []
             if isinstance(ports, int):
-                pass
+                ports_to_check.append(ports)
             else:
-                pass
-                
+                ports_to_check += ports
+            
             return True
