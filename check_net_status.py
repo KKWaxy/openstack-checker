@@ -33,7 +33,7 @@ class CheckProjectInstancesNetStatus(object):
                 return(process)
             
         @classmethod
-        def netcat(cls, ip: str, retry: int = 3) -> subprocess.CompletedProcess:
+        def netcat(cls, ip: str, port: int, retry: int = 3) -> subprocess.CompletedProcess:
             """_summary_
 
             Args:
@@ -43,8 +43,13 @@ class CheckProjectInstancesNetStatus(object):
             Returns:
                 subprocess.CompletedProcess: _description_
             """
-            shell_str = ""
+            shell_str = "nc -z -v {} {}".format(ip,port)
             process = subprocess.run(shell_str,shell=True, stdout=subprocess.PIPE, universal_newlines=True)
+            if process.returncode != 0:
+                if retry == 0:
+                    return(process)
+                sleep(5)                  
+                cls.netcat(ip,port,retry-1)
             return process
             
         def list_servers(self) -> List[Server]:
