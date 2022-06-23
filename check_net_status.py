@@ -7,7 +7,7 @@ from typing import List, Union
 from openstack.connection import Connection
 from openstack.compute.v2.server import Server
 
-class CheckProjectInstancesNetStatus(object):
+class InstancesNetStatus(object):
     
         def __init__(self, conn: Connection) -> None:
             
