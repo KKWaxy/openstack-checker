@@ -1,5 +1,10 @@
 from check_net_status import *
+import openstack
 
-with openstack.connect(cloud='dev.veone.net', region_name='veone', project_name= 'sysops') as con:
-    check = CheckProjectInstancesNetStatus(con)
-    check.ping_instances(interface="admin-net")
+projects = []
+
+for i in projects:
+    print("=================== Project {} Check Up ======================\n".format(i))
+    with openstack.connect  (cloud='', region_name='', project_name= i) as con:
+        check = InstancesNetStatus(con)
+        check.ping_instances(interface="") 
